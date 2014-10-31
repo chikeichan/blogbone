@@ -12,7 +12,13 @@ var BlogModel = Backbone.Model.extend({
 var BlogList = Backbone.Collection.extend({
 	model: BlogModel,
 	localStorage: new Backbone.LocalStorage('blogboneDB'),
-	comparator: 'fullName'
+	initialize: function(){
+		this.fetch();
+		this.on('add',function(blog){
+			bloglistsnapshot.addOne(blog);
+			blog.save();
+		});
+	}
 });
 
 var BlogSnapShot = Backbone.View.extend({
@@ -38,36 +44,11 @@ var BlogListSnapShot = Backbone.View.extend({
 		snapshot.render();
 	}
 });
-
-//testing article!
-var bloglist = new BlogList([{
-	author: 'Jacky',
-	subject: 'Virgin Galactic Crashed',
-	body: 'Virigin Galactic\'s SpaceShipTwo rocket plane exploded and crashed during a test flight on Friday, killing one crew member and seriously injuring another, authorities said.', 
-	timestamp: '10/31/2014',
-	id: 0
-},{
-	author: 'Jacky',
-	subject: 'Virgin Galactic Crashed',
-	body: 'Virigin Galactic\'s SpaceShipTwo rocket plane exploded and crashed during a test flight on Friday, killing one crew member and seriously injuring another, authorities said.', 
-	timestamp: '10/31/2014',
-	id: 1
-},{
-	author: 'Jacky',
-	subject: 'Virgin Galactic Crashed',
-	body: 'Virigin Galactic\'s SpaceShipTwo rocket plane exploded and crashed during a test flight on Friday, killing one crew member and seriously injuring another, authorities said.', 
-	timestamp: '10/31/2014',
-	id:2
-},{
-	author: 'Jacky',
-	subject: 'Virgin Galactic Crashed',
-	body: 'Virigin Galactic\'s SpaceShipTwo rocket plane exploded and crashed during a test flight on Friday, killing one crew member and seriously injuring another, authorities said.', 
-	timestamp: '10/31/2014',
-	id:3
-}]);
+//
+var bloglist = new BlogList();
 var bloglistsnapshot = new BlogListSnapShot({collection: bloglist});
 bloglistsnapshot.render();
-//================================================================
+//
 
 var headerView = new(Backbone.View.extend({
 	el: $('header'),
@@ -91,7 +72,46 @@ var headerView = new(Backbone.View.extend({
 	nohighlight: function(x){
 		$(x.currentTarget).removeClass('highlight');
 	},
-	highlighted: function(x){
-		$(x.currentTarget).toggleClass('highlighted');
+	highlighted: function(){
+		$('img').toggleClass('highlighted');
+		creatorView.toggle();
+	}
+}));
+
+var creatorView = new(Backbone.View.extend({
+	collection: bloglist,
+	el: $('content'),
+	render: function(){
+		this.$el.prepend(	"<div class='create'>"+
+											"<input type='text' placeholder='Author Name' name='author'>"+
+											"<input type='text' placeholder='Subject' name='subject'>"+
+											"<textarea rows='13' cols='100' placeholder='Type your article here...'></textarea>"+
+											"<img id='submit' src='./style/check52.png' /><img id='discard' src='./style/clear5.png' /></div>");
+	},
+	events: {
+		'click #discard': 'discard',
+		'click #submit' : 'submit'
+	},
+	initialize: function(){
+		this.render();
+	},
+	toggle: function(){
+		$('.create').slideToggle('slow');
+	},
+	discard: function(){
+		$('input').val('');
+		$('textarea').val('');
+	},
+	submit: function(){
+		var blog = {
+			author: $('input[name="author"]').val(),
+			subject: $('input[name="subject"]').val(),
+			body: $('textarea').val(),
+			timestamp: Date().slice(4,15),
+			id: bloglist.length
+		};
+		this.collection.add(blog);
+		this.discard();
+		headerView.highlighted();
 	}
 }));
