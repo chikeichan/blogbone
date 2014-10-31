@@ -10,7 +10,8 @@ header {
 	top: 0;
 	padding: 5px;
 	box-shadow: -4px 1px 5px -2px;
-	overflow-x: visible;
+	overflow-x: hidden;
+	overflow-y: hidden;
 	background: linear-gradient(rgb(224, 208, 183) 0%,rgb(61, 35, 0) 340%);
 	z-index: 1;
 }
@@ -33,16 +34,16 @@ header {
 	width: 200px;
 }
 
-.menu {
-	border: 3px solid white;
-	display: inline-block;
-	width: 45px;
-	height: 45px;
-	position: relative;
-	top: -2px;
-	border-radius: 30px;
+header img {
+	width: 50px;
 	float: right;
-	right: -8px;
+	position: relative;
+	right: 10px;
+	opacity: 0.5;
+}
+
+header img.highlight, header img.highlighted {
+	opacity: 1;
 }
 
 header input {
@@ -64,6 +65,8 @@ header input:focus {
 content {
 	position: relative;
 	top: 55px;
+	text-align: center;
+	display: block;
 }
 
 .snapshot {
