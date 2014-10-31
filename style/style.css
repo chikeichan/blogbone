@@ -1,0 +1,58 @@
+header {
+	height: 50px;
+	background-color: rgb(224, 208, 183);
+	position: fixed;
+	width: 100%;
+	left: 0;
+	top: 0;
+	padding: 5px;
+	box-shadow: -4px 1px 5px -2px;
+	overflow-x: visible;
+	background: linear-gradient(rgb(224, 208, 183) 0%,rgb(61, 35, 0) 340%);
+}
+.icon {
+	border: 3px solid white;
+	display: inline-block;
+	width: 45px;
+	height: 45px;
+	position: relative;
+	top: -2px;
+	border-radius: 30px;
+}
+.logo {
+	display: inline-block;
+	top: -15px;
+	position: relative;
+	color: white;
+	font-family: sans-serif;
+	margin: 0 auto 0 15%;
+	width: 200px;
+}
+
+.menu {
+	border: 3px solid white;
+	display: inline-block;
+	width: 45px;
+	height: 45px;
+	position: relative;
+	top: -2px;
+	border-radius: 30px;
+	float: right;
+	right: -8px;
+}
+
+header input {
+	width: 25%;
+	display: inline-block;
+	position: relative;
+	top: -20px;
+	border: none;
+	padding: 5px 5px 5px 10px;
+	border-radius: 5px;
+	color: grey;
+}
+
+header input:focus {
+	outline: none;
+	background-color: rgb(255, 248, 232);
+}
