@@ -1,3 +1,6 @@
+body{
+	background-color: rgb(231, 231, 231);
+}
 header {
 	height: 50px;
 	background-color: rgb(224, 208, 183);
@@ -9,6 +12,7 @@ header {
 	box-shadow: -4px 1px 5px -2px;
 	overflow-x: visible;
 	background: linear-gradient(rgb(224, 208, 183) 0%,rgb(61, 35, 0) 340%);
+	z-index: 1;
 }
 .icon {
 	border: 3px solid white;
@@ -55,4 +59,39 @@ header input {
 header input:focus {
 	outline: none;
 	background-color: rgb(255, 248, 232);
+}
+
+content {
+	position: relative;
+	top: 55px;
+}
+
+.snapshot {
+	width: 250px;
+	height: 190px;
+	box-shadow: 0px 0px 5px 0px grey;
+	padding: 15px 25px 15px 25px;
+	display: inline-block;
+	margin: 10px;
+	background-color: white;
+	font-family: sans-serif;
+}
+
+.snapshot a {
+	font-size: 18px;
+	color: black;
+
+}
+
+.snapshot article {
+	font-size: 15px;
+}
+
+.snapshot p {
+	float: right;
+	font-size: 11px;
+	color: grey;
+	position: relative;
+	bottom: -70px;
+	right: -17px;
 }

@@ -18,15 +18,20 @@ var BlogsList = Backbone.Collection.extend({
 var BlogView = Backbone.View.extend({
 	el: $('content'),
 	template: _.template(	'<div class="snapshot">'+
-												'<content><h2><%= subject%></h2>'+
-												'<article><%= body %></article></content>'+
+												'<a href=""><%= subject%></a>'+
+												'<article><%= body %></article>'+
+												'<p>By <%= author %> on <%= timestamp %></p>'+
 												'</div>'),
 	render: function(){
-
+		var attribute = this.model.toJSON();
+		var html = this.template(attribute);
+		this.$el.append(html);
 	}
 });
 
-
+var blog = new BlogModel({author: 'Jacky',subject: 'Virgin Galactic Crashed', body: 'Virigin Galactic\'s SpaceShipTwo rocket plane exploded and crashed during a test flight on Friday, killing one crew member and seriously injuring another, authorities said.', timestamp: '10/31/2014'})
+var blogview = new BlogView({model: blog})
+blogview.render();
 
 var headerView = new(Backbone.View.extend({
 	el: $('header'),
