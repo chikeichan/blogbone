@@ -57,7 +57,7 @@ var headerView = new(Backbone.View.extend({
 	},
 	render: function(){
 		this.$el.html("<div class='icon'></div>"+
-									"<div class='logo'><h1>BlogBone<h1></div>"+
+									"<div class='logo'><a href='#'><h1>BlogBone<h1></a></div>"+
 									"<input type='text' placeholder='Search'>"+
 									"<img src='./style/plus-5-256.png' />");
 	},
@@ -117,25 +117,87 @@ var creatorView = new(Backbone.View.extend({
 	}
 }));
 
+var DetailView = new (Backbone.View.extend({
+	el: $('content'),
+	template: _.template(	'<div class="snapshot detail">'+
+												'<h2><%= subject%></h2>'+
+												'<a href="#<%= author %>"><p><%= author %></p></a>'+
+												'<img id="delete" src="./style/clear5.png" />'+
+												'<a href="#edit/<%= id %>"><img id="edit" src="./style/create3.png" /></a>'+
+												'<p><%= timestamp %></p>'+
+												'<article><%= body %></article>'+
+												'</div>'),
+	events: {
+		'mouseenter img': 'highlight',
+		'mouseleave img': 'nohighlight',
+		'click #delete' : 'delete'
+	},
+	highlight: function(x){
+		$(x.currentTarget).addClass('highlight');
+	},
+	nohighlight: function(x){
+		$(x.currentTarget).removeClass('highlight');
+	},
+	render: function(id){
+		var blog = bloglist.at(id);
+		this.model = blog;
+		var attributes = blog.toJSON();
+		var html = this.template(attributes);
+		$('content').html(html);
+	},
+	delete: function(){
+		var confirm = window.confirm("Do you want to delete this blog post?");
+		if(confirm) {
+			this.model.destroy();
+			appRouter.navigate('',true);
+			this.model.save();
+		}
+	}
+}))
+
+var EditView = new (Backbone.View.extend({
+	el: $('content'),
+	template: _.template( '<div class="snapshot detail editing">'+
+												'<img id="reject" src="./style/clear5.png" />'+
+												'<img id="accept" src="./style/check52.png" />'+
+												"Author: <input type='text' name='author' value=<%= author %>><br>"+
+												"Subject: <input type='text' name='subject' value=<%= subject %>><br>"+
+												"<br>Article: <br><textarea rows='13' cols='100'><%= body %></textarea>"+
+												'</div>'),
+	events: {
+		'mouseenter img': 'highlight',
+		'mouseleave img': 'nohighlight',
+	},
+	highlight: function(x){
+		$(x.currentTarget).addClass('highlight');
+	},
+	nohighlight: function(x){
+		$(x.currentTarget).removeClass('highlight');
+	},
+	render: function(id){
+		var blog = bloglist.at(id);
+		this.model = blog;
+		var attributes = blog.toJSON();
+		var html = this.template(attributes);
+		this.$el.html(html);
+	}
+}))
+
 var AppRouter = Backbone.Router.extend({
 	routes: {
 		":id" : "detail",
+		"edit/:id": 'edit',
 		'': 'index'
 	},
 	index: function(){
 		$('content').html('');
 		bloglistsnapshot.render();
 	},
-	template: _.template(	'<div class="snapshot detail">'+
-												'<a href="#<%= id %>"><%= subject%></a>'+
-												'<article><%= body %></article>'+
-												'<p>By <%= author %> on <%= timestamp %></p>'+
-												'</div>'),
 	detail: function(id){
-		var blog = bloglist.at(id);
-		var attributes = blog.toJSON();
-		var html = this.template(attributes);
-		$('content').html(html);
+		DetailView.render(id);
+	},
+	edit: function(id){
+		EditView.render(id);
 	}
 });
 

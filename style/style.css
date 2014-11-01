@@ -42,6 +42,11 @@ header img {
 	opacity: 0.5;
 }
 
+.logo a {
+	color: white;
+	text-decoration: none;
+}
+
 header img.highlight, header img.highlighted {
 	opacity: 1;
 }
@@ -145,12 +150,10 @@ content {
 }
 
 .snapshot.detail{
-	width: 750px;
+	width: 650px;
 	height: auto;
-}
-
-.snapshot.detail a{
-	font-size: 30px
+	padding: 50px;
+	position: relative;
 }
 
 .snapshot.detail article {
@@ -163,7 +166,70 @@ content {
 }
 
 .snapshot.detail p {
-position: absolute;
-display: block;
-top: 50px;
+	float: none;
+	text-align: left;
+	margin: 3px;
+}
+
+img#delete {
+	position: absolute;
+	right: 13px;
+	width: 50px;
+	top: 14px;
+	opacity: 0.1;
+}
+
+img#edit {
+	position: absolute;
+	right: 73px;
+	width: 45px;
+	top: 17px;
+	opacity: 0.1;
+}
+img#delete.highlight, img#edit.highlight {
+	opacity: 0.7;
+}
+
+.editing input[type="text"] {
+	display: inline-block;
+	margin: 10px 0 10px 0;
+	background-color: rgba(255, 255, 255, 0);
+	border: none;
+	border-bottom: 1px solid grey;
+}
+
+.editing textarea {
+	width: 100%;
+	border: 1px solid grey;
+	height: 500px;
+	margin: 10px 0 10px 0;
+	font-family: sans-serif;
+}
+
+.editing input:focus, .editing textarea:focus {
+	outline: none;
+}
+
+.snapshot.detail.editing {
+	padding-top: 65px;
+}
+
+.editing img#accept {
+	position: absolute;
+	right: 13px;
+	width: 50px;
+	top: 14px;
+	opacity: 0.1;
+}
+
+.editing img#reject {
+	position: absolute;
+	right: 73px;
+	width: 45px;
+	top: 17px;
+	opacity: 0.1;
+}
+
+img#accept.highlight, img#reject.highlight {
+	opacity: 0.7;
 }
