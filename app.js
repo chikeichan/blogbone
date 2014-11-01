@@ -28,16 +28,10 @@ var BlogSnapShot = Backbone.View.extend({
 												'<article><%= body %></article>'+
 												'<p>By <%= author %> on <%= timestamp %></p>'+
 												'</div>'),
-	events: {
-		'click a': 'detail'
-	},
 	render: function(){
 		var attribute = this.model.toJSON();
 		var html = this.template(attribute);
 		this.$el.append(html);
-	},
-	detail: function(){
-		$('.snapshot').toggleClass('detail')
 	}
 });
 
@@ -86,7 +80,7 @@ var headerView = new(Backbone.View.extend({
 
 var creatorView = new(Backbone.View.extend({
 	collection: bloglist,
-	el: $('content'),
+	el: $('body'),
 	render: function(){
 		this.$el.prepend(	"<div class='create'>"+
 											"<input type='text' placeholder='Author Name' name='author'>"+
@@ -105,6 +99,7 @@ var creatorView = new(Backbone.View.extend({
 		$('.create').slideToggle('slow');
 	},
 	discard: function(){
+		console.log(this);
 		$('input').val('');
 		$('textarea').val('');
 	},
@@ -121,3 +116,28 @@ var creatorView = new(Backbone.View.extend({
 		headerView.highlighted();
 	}
 }));
+
+var AppRouter = Backbone.Router.extend({
+	routes: {
+		":id" : "detail",
+		'': 'index'
+	},
+	index: function(){
+		$('content').html('');
+		bloglistsnapshot.render();
+	},
+	template: _.template(	'<div class="snapshot detail">'+
+												'<a href="#<%= id %>"><%= subject%></a>'+
+												'<article><%= body %></article>'+
+												'<p>By <%= author %> on <%= timestamp %></p>'+
+												'</div>'),
+	detail: function(id){
+		var blog = bloglist.at(id);
+		var attributes = blog.toJSON();
+		var html = this.template(attributes);
+		$('content').html(html);
+	}
+});
+
+appRouter = new AppRouter();
+Backbone.history.start();

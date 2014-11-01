@@ -129,7 +129,7 @@ content {
 }
 
 .snapshot article {
-	font-size: 15px;
+	font-size: 14px;
 	height: 155px;
 	overflow-x: hidden;
 	overflow-y: hidden;
@@ -149,7 +149,21 @@ content {
 	height: auto;
 }
 
-.snapshot.detail article{
+.snapshot.detail a{
+	font-size: 30px
+}
+
+.snapshot.detail article {
 	height: auto;
 	overflow-y: visible;
+	text-indent: 35px;
+	line-height: 26px;
+	font-size: 12px;
+	margin: 10px 5px 0 5px;
+}
+
+.snapshot.detail p {
+position: absolute;
+display: block;
+top: 50px;
 }
