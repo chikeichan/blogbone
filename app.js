@@ -175,9 +175,8 @@ var EditView = new (Backbone.View.extend({
 		$(x.currentTarget).removeClass('highlight');
 	},
 	render: function(id){
-		var blog = bloglist.get({id:id});
-		this.model = blog;
-		var attributes = blog.toJSON();
+		this.model = bloglist.get({id:id});
+		var attributes = this.model.toJSON();
 		var html = this.template(attributes);
 		this.$el.html(html);
 	},
@@ -189,7 +188,9 @@ var EditView = new (Backbone.View.extend({
 			timestamp: Date().slice(4,15)
 		};
 		this.model.set(blog);
+		appRouter.navigate(this.model.id, true);
 		this.model.save();
+
 	}
 }))
 
