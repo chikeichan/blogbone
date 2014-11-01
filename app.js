@@ -28,10 +28,16 @@ var BlogSnapShot = Backbone.View.extend({
 												'<article><%= body %></article>'+
 												'<p>By <%= author %> on <%= timestamp %></p>'+
 												'</div>'),
+	events: {
+		'click a': 'detail'
+	},
 	render: function(){
 		var attribute = this.model.toJSON();
 		var html = this.template(attribute);
 		this.$el.append(html);
+	},
+	detail: function(){
+		$('.snapshot').toggleClass('detail')
 	}
 });
 

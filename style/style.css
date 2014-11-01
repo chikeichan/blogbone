@@ -126,12 +126,13 @@ content {
 .snapshot a {
 	font-size: 18px;
 	color: black;
-
 }
 
 .snapshot article {
 	font-size: 15px;
 	height: 155px;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 .snapshot p {
@@ -141,4 +142,14 @@ content {
 	position: relative;
 	text-align: right;
 	margin-right: -15px;
+}
+
+.snapshot.detail{
+	width: 750px;
+	height: auto;
+}
+
+.snapshot.detail article{
+	height: auto;
+	overflow-y: visible;
 }
