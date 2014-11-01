@@ -15,8 +15,8 @@ var BlogList = Backbone.Collection.extend({
 	initialize: function(){
 		this.fetch();
 		this.on('add',function(blog){
-			bloglistsnapshot.addOne(blog);
 			blog.save();
+			bloglistsnapshot.addOne(blog);
 		});
 	}
 });
@@ -30,6 +30,7 @@ var BlogSnapShot = Backbone.View.extend({
 												'</div>'),
 	render: function(){
 		var attribute = this.model.toJSON();
+		attribute.id = this.model.id;
 		var html = this.template(attribute);
 		this.$el.append(html);
 	}
@@ -99,7 +100,6 @@ var creatorView = new(Backbone.View.extend({
 		$('.create').slideToggle('slow');
 	},
 	discard: function(){
-		console.log(this);
 		$('input').val('');
 		$('textarea').val('');
 	},
@@ -108,8 +108,7 @@ var creatorView = new(Backbone.View.extend({
 			author: $('input[name="author"]').val(),
 			subject: $('input[name="subject"]').val(),
 			body: $('textarea').val(),
-			timestamp: Date().slice(4,15),
-			id: bloglist.length
+			timestamp: Date().slice(4,15)
 		};
 		this.collection.add(blog);
 		this.discard();
@@ -139,7 +138,7 @@ var DetailView = new (Backbone.View.extend({
 		$(x.currentTarget).removeClass('highlight');
 	},
 	render: function(id){
-		var blog = bloglist.at(id);
+		var blog = bloglist.get({id: id});
 		this.model = blog;
 		var attributes = blog.toJSON();
 		var html = this.template(attributes);
@@ -158,7 +157,7 @@ var DetailView = new (Backbone.View.extend({
 var EditView = new (Backbone.View.extend({
 	el: $('content'),
 	template: _.template( '<div class="snapshot detail editing">'+
-												'<img id="reject" src="./style/clear5.png" />'+
+												'<a href="#<%= id %>"><img id="reject" src="./style/clear5.png" /></a>'+
 												'<img id="accept" src="./style/check52.png" />'+
 												"Author: <input type='text' name='author' value=<%= author %>><br>"+
 												"Subject: <input type='text' name='subject' value=<%= subject %>><br>"+
@@ -167,6 +166,7 @@ var EditView = new (Backbone.View.extend({
 	events: {
 		'mouseenter img': 'highlight',
 		'mouseleave img': 'nohighlight',
+		'click #accept' : 'accept'
 	},
 	highlight: function(x){
 		$(x.currentTarget).addClass('highlight');
@@ -175,11 +175,21 @@ var EditView = new (Backbone.View.extend({
 		$(x.currentTarget).removeClass('highlight');
 	},
 	render: function(id){
-		var blog = bloglist.at(id);
+		var blog = bloglist.get({id:id});
 		this.model = blog;
 		var attributes = blog.toJSON();
 		var html = this.template(attributes);
 		this.$el.html(html);
+	},
+	accept: function(){
+		var blog = {
+			author: $('.editing>input[name="author"]').val(),
+			subject: $('.editing >input[name="subject"]').val(),
+			body: $('.editing>textarea').val(),
+			timestamp: Date().slice(4,15)
+		};
+		this.model.set(blog);
+		this.model.save();
 	}
 }))
 
