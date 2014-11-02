@@ -238,7 +238,11 @@ var AppRouter = Backbone.Router.extend({
 		results = _.uniq(results)
 		results = new BlogListSnapShot({collection: results});
 		$('content').html('<p id="seach">Searching...</p>')
-		setTimeout(function(){results.render();},200);
+		if(results.length>0){
+			setTimeout(function(){results.render();},200);
+		} else {
+			$('content').html('<p id="seach">No results</p>')
+		}
 	}
 });
 
