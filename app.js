@@ -236,13 +236,15 @@ var AppRouter = Backbone.Router.extend({
 		})
 
 		results = _.uniq(results)
-		results = new BlogListSnapShot({collection: results});
 		$('content').html('<p id="seach">Searching...</p>')
-		if(results.length>0){
-			setTimeout(function(){results.render();},200);
-		} else {
-			$('content').html('<p id="seach">No results</p>')
-		}
+		setTimeout(function(){
+			if(results.length>0){
+				results = new BlogListSnapShot({collection: results});
+				results.render();
+			} else {
+				$('content').html('<p id="seach">No results</p>')
+			}
+		},250);
 	}
 });
 
