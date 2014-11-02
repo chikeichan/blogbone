@@ -38,6 +38,7 @@ var BlogSnapShot = Backbone.View.extend({
 
 var BlogListSnapShot = Backbone.View.extend({
 	render: function(){
+		$('content').html('');
 		this.collection.forEach(this.addOne,this);
 	},
 	addOne: function(blog){
@@ -65,7 +66,8 @@ var headerView = new(Backbone.View.extend({
 	events: {
 		'mouseenter img': 'highlight',
 		'mouseleave img': 'nohighlight',
-		'click img': 'highlighted'
+		'click img': 'highlighted',
+		'keypress input': 'search'
 	},
 	highlight: function(x){
 		$(x.currentTarget).addClass('highlight');
@@ -76,6 +78,17 @@ var headerView = new(Backbone.View.extend({
 	highlighted: function(){
 		$('img').toggleClass('highlighted');
 		creatorView.toggle();
+	},
+	search:function(e){
+		var query;
+		if(e.keyCode === 13) {
+			query = $('header input').val();
+		}
+
+		if(query){
+			appRouter.navigate('#search/'+query.replace(' ', '+'), true);
+			$('header input').val('');
+		}
 	}
 }));
 
@@ -198,6 +211,7 @@ var AppRouter = Backbone.Router.extend({
 	routes: {
 		":id" : "detail",
 		"edit/:id": 'edit',
+		"search/:query": 'search',
 		'': 'index'
 	},
 	index: function(){
@@ -209,6 +223,22 @@ var AppRouter = Backbone.Router.extend({
 	},
 	edit: function(id){
 		EditView.render(id);
+	},
+	search: function(query){
+		query = query.replace('+', ' ');
+		var results =[];
+		_.each(bloglist.models, function(blog){
+			_.each(blog.attributes, function(values){
+				if(values.toLowerCase().match(query)){
+					results.push(blog);
+				}
+			})
+		})
+
+		results = _.uniq(results)
+		results = new BlogListSnapShot({collection: results});
+		$('content').html('<p id="seach">Searching...</p>')
+		setTimeout(function(){results.render();},200);
 	}
 });
 
