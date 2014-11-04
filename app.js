@@ -225,7 +225,7 @@ var AppRouter = Backbone.Router.extend({
 		EditView.render(id);
 	},
 	search: function(query){
-		query = query.replace('+', ' ');
+		query = query.replace('+', ' ').toLowerCase();
 		var results =[];
 		_.each(bloglist.models, function(blog){
 			_.each(blog.attributes, function(values){

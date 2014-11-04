@@ -15,13 +15,13 @@ app.set('view engine', 'jade');
 //Express: serve base route / to localhost8080
 app.use(express.static(path.join(__dirname,'/')));
 
-/*
+
 //Express: Route "/" Handler
 app.get('/', function (req, res) {
   res.send('<html><body><h1>Hello My World</h1></body></html>');
 });
 
-
+/*
 //Express: Route /hi/every/body will yield a page that says 'hi every body'
 app.get('/:a?/:b?/:c?', function (req,res) {
 	res.send(req.params.a + ' ' + req.params.b + ' ' + req.params.c);
