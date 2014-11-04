@@ -4,7 +4,8 @@
 	"private":true,
 	"dependencies":{
 		"express":"*",
-		"jade":"*"
+		"jade":"*",
+		"mongodb": "*"
 	}
 
 }
