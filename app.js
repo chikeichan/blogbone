@@ -6,6 +6,16 @@ var BlogModel = Backbone.Model.extend({
 		body: '',
 		timestamp: '',
 		id: ''
+	},
+	validate: function(attributes){
+		if (!attributes.author || !attributes.subject || !attributes.body){
+			return 'Please fill out all fields';
+		}
+	},
+	initialize: function(){
+		this.on('invalid', function(model,error){
+			alert(error);
+		})
 	}
 });
 
@@ -15,8 +25,14 @@ var BlogList = Backbone.Collection.extend({
 	initialize: function(){
 		this.fetch();
 		this.on('add',function(blog){
-			blog.save();
-			bloglistsnapshot.addOne(blog);
+			if (blog.isValid()){
+				blog.save();
+				bloglistsnapshot.addOne(blog);
+				creatorView.discard();
+				headerView.highlighted();
+			} else {
+				blog.destroy();
+			}
 		});
 	}
 });
@@ -124,8 +140,6 @@ var creatorView = new(Backbone.View.extend({
 			timestamp: Date().slice(4,15)
 		};
 		this.collection.add(blog);
-		this.discard();
-		headerView.highlighted();
 	}
 }));
 
@@ -172,8 +186,8 @@ var EditView = new (Backbone.View.extend({
 	template: _.template( '<div class="snapshot detail editing">'+
 												'<a href="#<%= id %>"><img id="reject" src="./style/clear5.png" /></a>'+
 												'<img id="accept" src="./style/check52.png" />'+
-												"Author: <input type='text' name='author' value=<%= author %>><br>"+
-												"Subject: <input type='text' name='subject' value=<%= subject %>><br>"+
+												"Author: <input type='text' name='author' value='<%= author %>''><br>"+
+												"Subject: <input type='text' name='subject' value='<%= subject %>'><br>"+
 												"<br>Article: <br><textarea rows='13' cols='100'><%= body %></textarea>"+
 												'</div>'),
 	events: {
@@ -201,8 +215,10 @@ var EditView = new (Backbone.View.extend({
 			timestamp: Date().slice(4,15)
 		};
 		this.model.set(blog);
-		appRouter.navigate(this.model.id, true);
-		this.model.save();
+		if (this.model.isValid()){
+			this.model.save();
+			appRouter.navigate(this.model.id, true);
+		}
 
 	}
 }))
