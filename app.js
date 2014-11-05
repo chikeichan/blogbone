@@ -4,8 +4,7 @@ var BlogModel = Backbone.Model.extend({
 		author: '',
 		subject: '',
 		body: '',
-		timestamp: '',
-		id: ''
+		timestamp: ''
 	},
 	validate: function(attributes){
 		if (!attributes.author || !attributes.subject || !attributes.body){
@@ -21,9 +20,15 @@ var BlogModel = Backbone.Model.extend({
 
 var BlogList = Backbone.Collection.extend({
 	model: BlogModel,
-	localStorage: new Backbone.LocalStorage('blogboneDB'),
+	url: "/blogs",
 	initialize: function(){
-		this.fetch();
+		this.fetch({reset: true});
+
+		this.on('reset',function(){
+			var bloglistsnapshot = new BlogListSnapShot({collection: bloglist});
+			bloglistsnapshot.render();
+		})
+
 		this.on('add',function(blog){
 			if (blog.isValid()){
 				blog.save();
@@ -40,13 +45,13 @@ var BlogList = Backbone.Collection.extend({
 var BlogSnapShot = Backbone.View.extend({
 	el: $('content'),
 	template: _.template(	'<div class="snapshot">'+
-												'<a href="#<%= id %>"><%= subject%></a>'+
+												'<a href="#<%= cid %>"><%= subject%></a>'+
 												'<article><%= body %></article>'+
 												'<p>By <%= author %> on <%= timestamp %></p>'+
 												'</div>'),
 	render: function(){
 		var attribute = this.model.toJSON();
-		attribute.id = this.model.id;
+		attribute.cid = this.model.cid;
 		var html = this.template(attribute);
 		this.$el.append(html);
 	}
@@ -65,7 +70,6 @@ var BlogListSnapShot = Backbone.View.extend({
 //
 var bloglist = new BlogList();
 var bloglistsnapshot = new BlogListSnapShot({collection: bloglist});
-bloglistsnapshot.render();
 //
 
 var headerView = new(Backbone.View.extend({
@@ -149,7 +153,7 @@ var DetailView = new (Backbone.View.extend({
 												'<h2><%= subject%></h2>'+
 												'<a href="#<%= author %>"><p><%= author %></p></a>'+
 												'<img id="delete" src="./style/clear5.png" />'+
-												'<a href="#edit/<%= id %>"><img id="edit" src="./style/create3.png" /></a>'+
+												'<a href="#edit/<%= cid %>"><img id="edit" src="./style/create3.png" /></a>'+
 												'<p><%= timestamp %></p>'+
 												'<article><%= body %></article>'+
 												'</div>'),
@@ -165,9 +169,10 @@ var DetailView = new (Backbone.View.extend({
 		$(x.currentTarget).removeClass('highlight');
 	},
 	render: function(id){
-		var blog = bloglist.get({id: id});
+		var blog = bloglist.get(id)
 		this.model = blog;
 		var attributes = blog.toJSON();
+		attributes.cid = blog.cid;
 		var html = this.template(attributes);
 		$('content').html(html);
 	},
@@ -184,7 +189,7 @@ var DetailView = new (Backbone.View.extend({
 var EditView = new (Backbone.View.extend({
 	el: $('content'),
 	template: _.template( '<div class="snapshot detail editing">'+
-												'<a href="#<%= id %>"><img id="reject" src="./style/clear5.png" /></a>'+
+												'<a href="#<%= cid %>"><img id="reject" src="./style/clear5.png" /></a>'+
 												'<img id="accept" src="./style/check52.png" />'+
 												"Author: <input type='text' name='author' value='<%= author %>''><br>"+
 												"Subject: <input type='text' name='subject' value='<%= subject %>'><br>"+
@@ -202,8 +207,9 @@ var EditView = new (Backbone.View.extend({
 		$(x.currentTarget).removeClass('highlight');
 	},
 	render: function(id){
-		this.model = bloglist.get({id:id});
+		this.model = bloglist.get(id);
 		var attributes = this.model.toJSON();
+		attributes.cid = this.model.cid
 		var html = this.template(attributes);
 		this.$el.html(html);
 	},
