@@ -2,7 +2,7 @@ var http = require('http');
 var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost/db2');
+var db = mongoose.connect('mongodb://test:test@ds051630.mongolab.com:51630/blogbone');
 var Schema = mongoose.Schema;
 var bodyParser = require('body-parser');
 
@@ -61,7 +61,7 @@ app.get('/blogs', function (req,res) {
   });
 });
 
-//Express: delete
+//Express: Delete
 app.delete('/blogs/:id', function (req,res) {
 	BlogModel.remove({_id: req.params.id}, function(err){
 		if(err) {
@@ -72,14 +72,22 @@ app.delete('/blogs/:id', function (req,res) {
 	})
 });
 
-/*
-BlogModel.find({}, function(err, blog) {
-    for(var i=0; i<blog.length; i++){
-    	blog[i].remove();
-    }
-    console.log('delete all');
+//Express: Update
+app.put('/blogs/:id', function (req,res) {
+	var blog = {
+		author: req.body.author,
+		subject: req.body.subject,
+		body: req.body.body,
+		timestamp: req.body.timestamp
+	}
+	BlogModel.update({_id: req.params.id}, blog, {multi: false}, function(err, num, res){
+		if(!err) {
+			console.log(num+ ' updated')
+		} else {
+			console.log(err);
+		}
+	})
 });
-*/
 
 app.use(function(req,res){
 	res.render('404',{url: req.url});

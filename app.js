@@ -49,7 +49,7 @@ var BlogSnapShot = Backbone.View.extend({
 	template: _.template(	'<div class="snapshot">'+
 												'<a href="#<%= id %>"><%= subject%></a>'+
 												'<article><%= body %></article>'+
-												'<p>By <%= author %> on <%= timestamp %></p>'+
+												'<p>By "<a href="#searchByAuthor/<%= author %>"><%= author %></a>" on <%= timestamp %></p>'+
 												'</div>'),
 	render: function(){
 		var attribute = this.model.toJSON();
@@ -153,7 +153,7 @@ var DetailView = new (Backbone.View.extend({
 	el: $('content'),
 	template: _.template(	'<div class="snapshot detail">'+
 												'<h2><%= subject%></h2>'+
-												'<a href="#<%= author %>"><p><%= author %></p></a>'+
+												'<a href="#searchByAuthor/<%= author %>"><p><%= author %></p></a>'+
 												'<img id="delete" src="./style/clear5.png" />'+
 												'<a href="#edit/<%= id %>"><img id="edit" src="./style/create3.png" /></a>'+
 												'<p><%= timestamp %></p>'+
@@ -236,6 +236,7 @@ var AppRouter = Backbone.Router.extend({
 		":id" : "detail",
 		"edit/:id": 'edit',
 		"search/:query": 'search',
+		'searchByAuthor/:query': 'searchByAuthor',
 		'': 'index'
 	},
 	index: function(){
@@ -253,10 +254,32 @@ var AppRouter = Backbone.Router.extend({
 		var results =[];
 		_.each(bloglist.models, function(blog){
 			_.each(blog.attributes, function(values){
-				if(values.toLowerCase().match(query)){
-					results.push(blog);
+				if(typeof values === 'string') {
+					if(values.toLowerCase().match(query)){
+						results.push(blog);
+					}
 				}
 			})
+		})
+
+		results = _.uniq(results)
+		$('content').html('<p id="seach">Searching...</p>')
+		setTimeout(function(){
+			if(results.length>0){
+				results = new BlogListSnapShot({collection: results});
+				results.render();
+			} else {
+				$('content').html('<p id="seach">No results</p>')
+			}
+		},250);
+	},
+	searchByAuthor: function(query){
+		query = query.replace('+', ' ').toLowerCase();
+		var results =[];
+		_.each(bloglist.models, function(blog){
+			if(blog.attributes.author.toLowerCase().match(query)){
+				results.push(blog);
+			}
 		})
 
 		results = _.uniq(results)

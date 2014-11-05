@@ -133,6 +133,11 @@ content {
 	color: black;
 }
 
+.snapshot p a {
+	font-size: 11px;
+	color: grey;
+}
+
 .snapshot article {
 	font-size: 14px;
 	height: 155px;
