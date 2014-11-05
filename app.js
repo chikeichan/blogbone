@@ -4,8 +4,10 @@ var BlogModel = Backbone.Model.extend({
 		author: '',
 		subject: '',
 		body: '',
-		timestamp: ''
+		timestamp: '',
 	},
+	idAttribute: '_id',
+	urlRoot: "/blogs",
 	validate: function(attributes){
 		if (!attributes.author || !attributes.subject || !attributes.body){
 			return 'Please fill out all fields';
@@ -45,13 +47,13 @@ var BlogList = Backbone.Collection.extend({
 var BlogSnapShot = Backbone.View.extend({
 	el: $('content'),
 	template: _.template(	'<div class="snapshot">'+
-												'<a href="#<%= cid %>"><%= subject%></a>'+
+												'<a href="#<%= id %>"><%= subject%></a>'+
 												'<article><%= body %></article>'+
 												'<p>By <%= author %> on <%= timestamp %></p>'+
 												'</div>'),
 	render: function(){
 		var attribute = this.model.toJSON();
-		attribute.cid = this.model.cid;
+		attribute.id = this.model.id;
 		var html = this.template(attribute);
 		this.$el.append(html);
 	}
@@ -153,7 +155,7 @@ var DetailView = new (Backbone.View.extend({
 												'<h2><%= subject%></h2>'+
 												'<a href="#<%= author %>"><p><%= author %></p></a>'+
 												'<img id="delete" src="./style/clear5.png" />'+
-												'<a href="#edit/<%= cid %>"><img id="edit" src="./style/create3.png" /></a>'+
+												'<a href="#edit/<%= id %>"><img id="edit" src="./style/create3.png" /></a>'+
 												'<p><%= timestamp %></p>'+
 												'<article><%= body %></article>'+
 												'</div>'),
@@ -172,16 +174,16 @@ var DetailView = new (Backbone.View.extend({
 		var blog = bloglist.get(id)
 		this.model = blog;
 		var attributes = blog.toJSON();
-		attributes.cid = blog.cid;
+		attributes.id = blog.id;
 		var html = this.template(attributes);
 		$('content').html(html);
 	},
 	delete: function(){
 		var confirm = window.confirm("Do you want to delete this blog post?");
 		if(confirm) {
+			console.log(this.model)
 			this.model.destroy();
 			appRouter.navigate('',true);
-			this.model.save();
 		}
 	}
 }))
@@ -189,7 +191,7 @@ var DetailView = new (Backbone.View.extend({
 var EditView = new (Backbone.View.extend({
 	el: $('content'),
 	template: _.template( '<div class="snapshot detail editing">'+
-												'<a href="#<%= cid %>"><img id="reject" src="./style/clear5.png" /></a>'+
+												'<a href="#<%= id %>"><img id="reject" src="./style/clear5.png" /></a>'+
 												'<img id="accept" src="./style/check52.png" />'+
 												"Author: <input type='text' name='author' value='<%= author %>''><br>"+
 												"Subject: <input type='text' name='subject' value='<%= subject %>'><br>"+
@@ -209,7 +211,7 @@ var EditView = new (Backbone.View.extend({
 	render: function(id){
 		this.model = bloglist.get(id);
 		var attributes = this.model.toJSON();
-		attributes.cid = this.model.cid
+		attributes.id = this.model.id
 		var html = this.template(attributes);
 		this.$el.html(html);
 	},

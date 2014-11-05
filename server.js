@@ -49,16 +49,27 @@ app.post('/blogs', function (req,res) {
 		} else {
 			console.log('Successful');
 		}
-		console.dir(blog);
 	});
 
 });
 
+//Express: Read
 app.get('/blogs', function (req,res) {
 	BlogModel.find({}, function(err, blog) {
     res.send(blog);
     console.log(blog.length+' blog');
   });
+});
+
+//Express: delete
+app.delete('/blogs/:id', function (req,res) {
+	BlogModel.remove({_id: req.params.id}, function(err){
+		if(err) {
+			console.log(err);
+		} else {
+			console.log('Deleted');
+		}
+	})
 });
 
 /*
